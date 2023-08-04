@@ -1,0 +1,21 @@
+menu "Network Configuration"
+
+	config TRY_RECONNECT
+		int "Number of try for reconnection"
+		default 5
+		range 1 15
+
+	config WAIT_TIME
+		int "Wait time in ms for connection"
+		default 20000
+		range 1000 50000
+	config SCAN_MAX
+		int "Max number of network in a scan"
+		default 5
+		range 1 50
+
+	config MAC_ADDR_SIZE
+	       int "MAC address size"
+	       default 6
+	       range 6 48
+endmenu
