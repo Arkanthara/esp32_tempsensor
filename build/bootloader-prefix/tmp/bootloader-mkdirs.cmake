@@ -4,16 +4,19 @@
 cmake_minimum_required(VERSION 3.5)
 
 file(MAKE_DIRECTORY
-  "C:/Espressif/frameworks/esp-idf-v4.4-2/components/bootloader/subproject"
-  "C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader"
-  "C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix"
-  "C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/tmp"
-  "C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp"
-  "C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src"
-  "C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp"
+  "/home/marcus/esp/esp-idf/components/bootloader/subproject"
+  "/home/marcus/Documents/esp32_tempsensor/build/bootloader"
+  "/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix"
+  "/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/tmp"
+  "/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp"
+  "/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src"
+  "/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp"
 )
 
 set(configSubDirs )
 foreach(subDir IN LISTS configSubDirs)
-    file(MAKE_DIRECTORY "C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/${subDir}")
+    file(MAKE_DIRECTORY "/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/${subDir}")
 endforeach()
+if(cfgdir)
+  file(MAKE_DIRECTORY "/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp${cfgdir}") # cfgdir has leading slash
+endif()

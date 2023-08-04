@@ -1,13 +1,13 @@
 # Target labels
  bootloader
 # Source files and their labels
-C:/Users/midonnet/Documents/esp32_tempsensor/build/CMakeFiles/bootloader
-C:/Users/midonnet/Documents/esp32_tempsensor/build/CMakeFiles/bootloader.rule
-C:/Users/midonnet/Documents/esp32_tempsensor/build/CMakeFiles/bootloader-complete.rule
-C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
-C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
-C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
-C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
-C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
-C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
-C:/Users/midonnet/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
+/home/marcus/Documents/esp32_tempsensor/build/CMakeFiles/bootloader
+/home/marcus/Documents/esp32_tempsensor/build/CMakeFiles/bootloader.rule
+/home/marcus/Documents/esp32_tempsensor/build/CMakeFiles/bootloader-complete.rule
+/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/home/marcus/Documents/esp32_tempsensor/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
