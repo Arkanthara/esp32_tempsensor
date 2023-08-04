@@ -4593,6 +4593,206 @@
                 ],
                 "title": "MAC address size",
                 "type": "int"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_0_SSID",
+                "name": "NETWORK_0_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_0_PWD",
+                "name": "NETWORK_0_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_1_SSID",
+                "name": "NETWORK_1_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_1_PWD",
+                "name": "NETWORK_1_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_2_SSID",
+                "name": "NETWORK_2_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_2_PWD",
+                "name": "NETWORK_2_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_3_SSID",
+                "name": "NETWORK_3_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_3_PWD",
+                "name": "NETWORK_3_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_4_SSID",
+                "name": "NETWORK_4_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_4_PWD",
+                "name": "NETWORK_4_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_5_SSID",
+                "name": "NETWORK_5_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_5_PWD",
+                "name": "NETWORK_5_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_6_SSID",
+                "name": "NETWORK_6_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_6_PWD",
+                "name": "NETWORK_6_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_7_SSID",
+                "name": "NETWORK_7_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_7_PWD",
+                "name": "NETWORK_7_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_8_SSID",
+                "name": "NETWORK_8_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_8_PWD",
+                "name": "NETWORK_8_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_9_SSID",
+                "name": "NETWORK_9_SSID",
+                "range": null,
+                "title": "Network SSID",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "NETWORK_9_PWD",
+                "name": "NETWORK_9_PWD",
+                "range": null,
+                "title": "Network Password",
+                "type": "string"
             }
         ],
         "depends_on": null,

@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "esp32_tempsensor",
-    "project_version":    "0dfdf41-dirty",
+    "project_version":    "45cd369-dirty",
     "project_path":       "/home/marcus/Documents/esp32_tempsensor",
     "idf_path":           "/home/marcus/esp/esp-idf",
     "build_dir":          "/home/marcus/Documents/esp32_tempsensor/build",

@@ -1,0 +1,9 @@
+-- Existing sdkconfig '/home/marcus/Documents/esp32_tempsensor/sdkconfig' renamed to '/home/marcus/Documents/esp32_tempsensor/sdkconfig.old'.
+-- Found Git: /usr/bin/git (found version "2.41.0") 
+-- Component directory /home/marcus/Documents/esp32_tempsensor/components/networkstorage does not contain a CMakeLists.txt file. No component will be added
+-- The C compiler identification is unknown
+-- The CXX compiler identification is unknown
+-- The ASM compiler identification is unknown
+-- Found assembler: xtensa-esp32s3-elf-gcc
+-- Warning: Did not find file Compiler/-ASM
+-- Configuring incomplete, errors occurred!
