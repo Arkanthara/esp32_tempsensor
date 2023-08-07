@@ -22,13 +22,15 @@ int networks_number = 0;
 NetworkStorage networks[10];
 char mac[CONFIG_MAC_ADDR_SIZE * 3];
 
-#if defined(CONFIG_NETWORK_0_SSID) && defined(CONFIG_NETWORK_0_PWD)
-#endif
+//#if defined(CONFIG_NETWORK_0_SSID) && defined(CONFIG_NETWORK_0_PWD)
+//init_networks((char *) CONFIG_NETWORK_0_SSID, (char *) CONFIG_NETWORK_0_PWD);
+//#endif
 
 // #if defined(CONFIG_NETWORK_1_SSID) && defined(CONFIG_NETWORK_1_PWD)
 // networks[networks_number].ssid = CONFIG_NETWORK_1_SSID;
-// networks[networks_number].pwd = CONFIG_NETWORK_1_PWD;
+// networks[networks_number].pwd = (char *) CONFIG_NETWORK_1_PWD;
 // networks_number ++;
+// #else
 // #endif
 // 
 // #if defined(CONFIG_NETWORK_2_SSID) && defined(CONFIG_NETWORK_2_PWD)
@@ -88,8 +90,9 @@ void app_main(void)
 		ESP_LOGE("NVS Initialisation", "Failed to initialize non volatile storage");
 		return;
 	}
-	
-	init_networks("WIFI_Mobile", "428fdcf3d44d5e92a54d1ca5579d21416be03291895184d724abf652f24a");
+	create_networks_table();
+	ESP_LOGI("CONFIG", "ssid: %s", networks[0].ssid);
+	ESP_LOGI("CONFIG", "Number of networks registered: %d", networks_number);
 
 	// Initialize wifi and connect wifi
 	esp_netif_t * netif = init_wifi();

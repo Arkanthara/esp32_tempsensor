@@ -500,6 +500,17 @@ CONFIG_TRY_RECONNECT=5
 CONFIG_WAIT_TIME=20000
 CONFIG_SCAN_MAX=5
 CONFIG_MAC_ADDR_SIZE=6
+# end of Network Configuration
+
+#
+# URL for HTTP Post
+#
+CONFIG_URL="https://df20e270-e352-4e0e-9d9d-7594db0f3c6e.mock.pstmn.io/tempSensor"
+# end of URL for HTTP Post
+
+#
+# Network SSID & PASSWORD
+#
 CONFIG_NETWORK_0_SSID="WIFI_Mobile"
 CONFIG_NETWORK_0_PWD="428fdcf3d44d5e92a54d1ca5579d21416be03291895184d724abf652f24a"
 CONFIG_NETWORK_1_SSID=""
@@ -520,13 +531,7 @@ CONFIG_NETWORK_8_SSID=""
 CONFIG_NETWORK_8_PWD=""
 CONFIG_NETWORK_9_SSID=""
 CONFIG_NETWORK_9_PWD=""
-# end of Network Configuration
-
-#
-# URL for HTTP Post
-#
-CONFIG_URL="https://df20e270-e352-4e0e-9d9d-7594db0f3c6e.mock.pstmn.io/tempSensor"
-# end of URL for HTTP Post
+# end of Network SSID & PASSWORD
 
 #
 # Compiler options

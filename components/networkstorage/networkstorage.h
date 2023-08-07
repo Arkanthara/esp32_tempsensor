@@ -10,4 +10,6 @@ typedef struct NetworkStorage
 
 void init_networks(char * ssid, char * pwd);
 
+void create_networks_table();
+
 #endif
