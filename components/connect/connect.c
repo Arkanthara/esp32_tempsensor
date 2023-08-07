@@ -6,9 +6,6 @@
 #include "freertos/semphr.h"
 #include "networkstorage.h"
 
-// Indicate the current try for a reconnection
-int current_try_for_reconnection = 0;
-
 // Semaphore used for waiting an ip address
 SemaphoreHandle_t semaphore = NULL;
 
@@ -48,86 +45,12 @@ void connect_wifi(int index)
 	}
 }
 
-
-// Function for scan and print networks
-bool scan_wifi(int index, bool search)
-{
-	// We scan networks
-	int error = esp_wifi_scan_start(NULL, true);
-	if (error != ESP_OK && error != ESP_ERR_WIFI_NOT_STARTED)
-	{
-		ESP_LOGE("Wifi Scan", "Failed");
-		return false;
-	}
-	else if (error == ESP_ERR_WIFI_NOT_STARTED)
-	{
-		ESP_LOGE("Wifi Scan", "Wifi stop, so we can't scan network");
-		return false;
-	}
-	uint16_t num_wifi = CONFIG_SCAN_MAX;
-	wifi_ap_record_t wifi[CONFIG_SCAN_MAX];
-	uint16_t ap_found = 0;
-
-	// We get result
-	ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&num_wifi, wifi));
-
-	// We ask how many network are found
-	ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_found));
-
-	// If we just want to scan wifi, we print result
-	if (!search)
-	{
-		// We print result
-		ESP_LOGI("Wifi Scan", "Scan result");
-		for (int i = 0; i < (int) ap_found && i < CONFIG_SCAN_MAX; i++)
-		{
-			ESP_LOGI("Wifi Scan", "SSID: %s, len: %d", (char *) wifi[i].ssid, strlen((char *) wifi[i].ssid));
-
-		}
-	}
-
-	// Else we search by priority order if an item has a ssid like in scan wifi
-	else
-	{
-	       	for (int i = 0; i < (int) ap_found && i < CONFIG_SCAN_MAX; i++)
-       		{
-       			if (strcmp((char *) wifi[i].ssid, networks[index].ssid) == 0)
-       			{
-       				ESP_LOGI("Wifi Scan", "SSID found: %s", networks[index].ssid);
-       				return true;
-       			}
-       		}
-	}
-	return false;
-
-}
-void on_connection(void * event_handler_arg, esp_event_base_t event_base, int32_t event_id, void * event_data)
-{
-	current_try_for_reconnection = 0;
-}
-
 void on_disconnection(void * event_handler_arg, esp_event_base_t event_base, int32_t event_id, void * event_data)
 {
  	is_connected = false;
  	ESP_LOGE("Connection Status", "Disconnected");
- 	if (current_try_for_reconnection < CONFIG_TRY_RECONNECT)
- 	{
-		if (scan_wifi(0, true))
-		{
-		  ESP_LOGI("Wifi Connection", "Trying to connect to: %s", networks[0].ssid);
-			current_try_for_reconnection ++;
-			connect_wifi(0);
-		}
-		else
-		{
-			ESP_LOGE("Wifi Scan", "We don't find a network available with a known password");
-			current_try_for_reconnection ++;
-		}
-	}
- 	else
- 	{
- 		ESP_LOGE("Connection Status", "Connection failed");
- 	}
+	ESP_LOGI("Wifi Connection", "Trying to connect to: %s", networks[0].ssid);
+	connect_wifi(0);
 }
 
 void on_got_ip(void * event_handler_arg, esp_event_base_t event_base, int32_t event_id, void * event_data)
@@ -169,7 +92,6 @@ esp_netif_t * init_wifi(void)
 
 	// Attach handlers to an action. Is it necessary to create this handlers ???
 	esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, on_disconnection, NULL);
-	esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, on_connection, NULL);
 	esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, on_got_ip, NULL);
 
 	// Initialize wifi
@@ -183,14 +105,7 @@ esp_netif_t * init_wifi(void)
 	ESP_ERROR_CHECK(esp_wifi_start());
 
 	// Try to connect to our network
-	if (scan_wifi(0, true))
-	{
-		connect_wifi(0);
-	}
-	else
-	{
-		return NULL;
-	}
+	connect_wifi(0);
 
 	// Wait semaphore which indicate that we have ip address (add TickType_t cast ???)
 	if (xSemaphoreTake(semaphore, CONFIG_WAIT_TIME / portTICK_PERIOD_MS) != pdTRUE)
@@ -208,7 +123,6 @@ esp_netif_t * init_wifi(void)
 void disconnect_wifi(esp_netif_t * netif)
 {
 	ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, on_disconnection));
-	ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, on_connection));
 	ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, on_got_ip));
 
 	ESP_ERROR_CHECK(esp_wifi_stop());
@@ -219,6 +133,40 @@ void disconnect_wifi(esp_netif_t * netif)
 	ESP_ERROR_CHECK(esp_event_loop_delete_default());
 }
 
+// Function for scan and print networks
+void scan_wifi()
+{
+	// We scan networks
+	int error = esp_wifi_scan_start(NULL, true);
+	if (error != ESP_OK && error != ESP_ERR_WIFI_NOT_STARTED)
+	{
+		ESP_LOGE("Wifi Scan", "Failed");
+		return;
+	}
+	else if (error == ESP_ERR_WIFI_NOT_STARTED)
+	{
+		ESP_LOGE("Wifi Scan", "Wifi stop, so we can't scan network");
+		return;
+	}
+	uint16_t num_wifi = CONFIG_SCAN_MAX;
+	wifi_ap_record_t wifi[CONFIG_SCAN_MAX];
+	uint16_t ap_found = 0;
+
+	// We get result
+	ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&num_wifi, wifi));
+
+	// We ask how many network are found
+	ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_found));
+
+	// We print result
+	ESP_LOGI("Wifi Scan", "Scan result");
+	for (int i = 0; i < (int) ap_found && i < CONFIG_SCAN_MAX; i++)
+	{
+		ESP_LOGI("Wifi Scan", "SSID: %s, len: %d", (char *) wifi[i].ssid, strlen((char *) wifi[i].ssid));
+
+	}
+
+}
 /*
 esp_netif_t * connect_wifi(void)
 {

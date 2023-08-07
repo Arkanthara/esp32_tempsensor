@@ -12,4 +12,10 @@ void init_networks(char * ssid, char * pwd);
 
 void create_networks_table();
 
+void create_nvs(char * name);
+
+int read_nvs(char * name, char * key);
+
+void write_nvs(char * name, char * key, int value);
+
 #endif

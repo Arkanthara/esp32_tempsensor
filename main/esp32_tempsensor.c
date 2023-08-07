@@ -93,6 +93,9 @@ void app_main(void)
 	create_networks_table();
 	ESP_LOGI("CONFIG", "ssid: %s", networks[0].ssid);
 	ESP_LOGI("CONFIG", "Number of networks registered: %d", networks_number);
+	create_nvs("Test");
+	write_nvs("Test", "2", 19);
+	ESP_LOGI("NVS Init", "Result for key %s: %d", "2", read_nvs("Test", "2"));
 
 	// Initialize wifi and connect wifi
 	esp_netif_t * netif = init_wifi();

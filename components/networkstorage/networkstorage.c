@@ -1,6 +1,7 @@
 #include "networkstorage.h"
 #include "esp_log.h"
 #include "string.h"
+#include "nvs.h"
 
 extern NetworkStorage networks[10];
 extern int networks_number;
@@ -15,6 +16,73 @@ void init_networks(char * ssid, char * pwd)
 	strcpy(networks[networks_number].ssid, ssid);
 	strcpy(networks[networks_number].pwd, pwd);
 	networks_number ++;
+}
+
+void create_nvs(char * name)
+{
+	nvs_handle_t myhandle;
+	ESP_ERROR_CHECK(nvs_open(name, NVS_READWRITE, &myhandle));
+	for (int i = 0; i < networks_number; i++)
+	{
+		char key[2];
+		if (snprintf(key, 2, "%d", i) < 0)
+		{
+			ESP_LOGE("NVS Init", "Error when trying parse int to char *");
+		}
+		else
+		{
+			ESP_ERROR_CHECK(nvs_set_i8(myhandle, key, i));
+			ESP_LOGI("NVS Init", "We write in nvs: %s: %d", key, i);
+		}
+	}
+	ESP_ERROR_CHECK(nvs_commit(myhandle));
+	nvs_close(myhandle);
+
+}
+
+int read_nvs(char * name, char * key)
+{
+	int8_t value;
+	nvs_handle_t myhandle;
+	ESP_ERROR_CHECK(nvs_open(name, NVS_READONLY, &myhandle));
+	ESP_ERROR_CHECK(nvs_get_i8(myhandle, key, &value));
+	return (int) value;
+
+}
+
+void write_nvs(char * name, char * key, int value)
+{
+	nvs_handle_t myhandle;
+	ESP_ERROR_CHECK(nvs_open(name, NVS_READWRITE, &myhandle));
+	ESP_ERROR_CHECK(nvs_set_i8(myhandle, key, (int8_t) value));
+	ESP_ERROR_CHECK(nvs_commit(myhandle));
+}
+
+void pop_nvs(char * name, int value)
+{
+	int index;
+	nvs_handle_t myhandle;
+	ESP_ERROR_CHECK(nvs_open(name, NVS_READWRITE, &myhandle));
+	
+	for (int i = 0; i < networks_number; i++)
+	{
+		char key[2];
+		if (snprintf(key, 2, "%d", i) < 0)
+		{
+			ESP_LOGE("NVS Pop", "Can't convert int to char *");
+		}
+		else
+		{
+			int8_t result;
+			ESP_ERROR_CHECK(nvs_get_i8(myhandle, key, &result));
+			if ((int) result == value)
+			{
+				index = i;
+				break;
+			}
+			/* TODO the next....*/
+		}
+	}
 }
 
 /* I see that in menu config, when nothing is given, we have only the '\0', so the size is equal to 1 for ''....*/
