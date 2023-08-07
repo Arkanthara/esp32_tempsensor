@@ -1,7 +1,0 @@
-# ninja log v5
-30	118871	0	CMakeFiles/menuconfig	1447a187fd340e49
-32	5711	1691161969693711814	build.ninja	c1fabf31fd832a7e
-30	118871	0	/home/marcus/Documents/esp32_tempsensor/build/CMakeFiles/menuconfig	1447a187fd340e49
-29	6144	1691161969693711814	build.ninja	c1fabf31fd832a7e
-30	47	0	CMakeFiles/clean.additional	a16c0306c56fa3cc
-47	115	0	clean	a31eedcededa8236

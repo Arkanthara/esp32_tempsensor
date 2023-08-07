@@ -4,8 +4,7 @@
 #include "esp_log.h"
 #include "esp_err.h"
 #include "freertos/semphr.h"
-#include "global.h"
-#include "list.h"
+#include "networkstorage.h"
 
 // Indicate the current try for a reconnection
 int current_try_for_reconnection = 0;
@@ -16,9 +15,12 @@ SemaphoreHandle_t semaphore = NULL;
 // Indicate if wifi is starting
 bool wifi_start = false;
 extern bool is_connected;
+extern NetworkStorage networks[10];
+extern int networks_number;
+extern char mac[CONFIG_MAC_ADDR_SIZE * 3];
 
 // Function for connect wifi to a specific ssid
-void connect_wifi(Item * item)
+void connect_wifi(int index)
 {
 
 	// Create a config for wifi
@@ -26,18 +28,12 @@ void connect_wifi(Item * item)
 
 	memset(config.sta.ssid, 0, sizeof(config.sta.ssid));
 	memset(config.sta.password, 0, sizeof(config.sta.password));
-	strncpy((char *)(config.sta.ssid), item->data->ssid, item->data->ssid_len);
-	strncpy((char *)(config.sta.password), item->data->password, item->data->password_len);
+	strcpy((char *)(config.sta.ssid), networks[index].ssid);
+	strcpy((char *)(config.sta.password), networks[index].pwd);
 
 	// Set the configuration to wifi
-	int error = esp_wifi_set_config(WIFI_IF_STA, &config);
-	if (error == ESP_ERR_WIFI_PASSWORD)
-	{
-		// It don't detect wrong password ...
-		ESP_LOGE("Wifi Config", "Wrong password");
-		return;
-	}
-	else if (error != ESP_OK)
+	int error = esp_wifi_set_config(WIFI_IF_STA, &config);	
+	if (error != ESP_OK)
 	{
 		ESP_LOGE("Wifi Config", "Error: %s", esp_err_to_name(error));
 		return;
@@ -45,54 +41,28 @@ void connect_wifi(Item * item)
 
 	// connect to wifi
 	error  = esp_wifi_connect();
-	if (error == ESP_ERR_WIFI_SSID)
+	if (error != ESP_OK)
 	{
-		ESP_LOGE("Wifi Connect", "Wrong ssid");
-	}
-	else if (error == ESP_ERR_WIFI_CONN)
-	{
-		ESP_LOGE("Wifi Connect", "Internal error has made crash the connection");
-	}
-	else if (error != ESP_OK)
-	{
-		ESP_LOGE("Wifi Connect", "Error when trying to connect to network: %s", esp_err_to_name(error));
-	}
-
-}
-
-
-void connect_wifi_no_init(void)
-{
-	// ESP_ERROR_CHECK(esp_wifi_stop());
-
-	// ESP_ERROR_CHECK(esp_wifi_start());
-
-	item = head->head;
-
-	connect_wifi(item);
-
-	// Wait semaphore which indicate that we have ip address (add TickType_t cast ???)
-	if (xSemaphoreTake(semaphore, CONFIG_WAIT_TIME / portTICK_PERIOD_MS) != pdTRUE)
-	{
-		ESP_LOGE("Semaphore", "Semaphore don't giving up");
+		ESP_LOGE("Wifi Connection", "Error: %s", esp_err_to_name(error));
+		return;
 	}
 }
 
 
 // Function for scan and print networks
-Item * scan_wifi(Item * item, bool search)
+bool scan_wifi(int index, bool search)
 {
 	// We scan networks
 	int error = esp_wifi_scan_start(NULL, true);
 	if (error != ESP_OK && error != ESP_ERR_WIFI_NOT_STARTED)
 	{
 		ESP_LOGE("Wifi Scan", "Failed");
-		return NULL;
+		return false;
 	}
 	else if (error == ESP_ERR_WIFI_NOT_STARTED)
 	{
 		ESP_LOGE("Wifi Scan", "Wifi stop, so we can't scan network");
-		return NULL;
+		return false;
 	}
 	uint16_t num_wifi = CONFIG_SCAN_MAX;
 	wifi_ap_record_t wifi[CONFIG_SCAN_MAX];
@@ -119,20 +89,16 @@ Item * scan_wifi(Item * item, bool search)
 	// Else we search by priority order if an item has a ssid like in scan wifi
 	else
 	{
-		while (item != NULL)
-		{
-			for (int i = 0; i < (int) ap_found && i < CONFIG_SCAN_MAX; i++)
-			{
-				if (strcmp((char *) wifi[i].ssid, item->data->ssid) == 0)
-				{
-					ESP_LOGI("Wifi Scan", "SSID found: %s", item->data->ssid);
-					return item;
-				}
-			}
-			item = item->next;
-		}
+	       	for (int i = 0; i < (int) ap_found && i < CONFIG_SCAN_MAX; i++)
+       		{
+       			if (strcmp((char *) wifi[i].ssid, networks[index].ssid) == 0)
+       			{
+       				ESP_LOGI("Wifi Scan", "SSID found: %s", networks[index].ssid);
+       				return true;
+       			}
+       		}
 	}
-	return NULL;
+	return false;
 
 }
 void on_connection(void * event_handler_arg, esp_event_base_t event_base, int32_t event_id, void * event_data)
@@ -146,67 +112,18 @@ void on_disconnection(void * event_handler_arg, esp_event_base_t event_base, int
  	ESP_LOGE("Connection Status", "Disconnected");
  	if (current_try_for_reconnection < CONFIG_TRY_RECONNECT)
  	{
- 		if (current_try_for_reconnection == 0)
- 		{
- 			item = head->head;
- 			item = scan_wifi(item, true);
- 			if (item != NULL)
- 			{
- 				item_print(item);
- 				current_try_for_reconnection ++;
- 				connect_wifi(item);
- 			}
- 			else
- 			{
- 				ESP_LOGE("Wifi Scan", "We don't find a network available with a known password");
- 				current_try_for_reconnection ++;
- 			}
- 		}
- 		else if (item->next != NULL)
- 		{
- 			item = item->next;
- 			item = scan_wifi(item, true);
- 			if (item != NULL)
- 			{
- 				item_print(item);
- 				current_try_for_reconnection ++;
- 				connect_wifi(item);
- 			}
- 			else
- 			{
- 				ESP_LOGE("Wifi Scan", "Retrying connect to wifi...");
- 				item = head->head;
- 				item = scan_wifi(item, true);
- 				if (item != NULL)
- 				{
- 					item_print(item);
- 					current_try_for_reconnection ++;
- 					connect_wifi(item);
- 				}
- 				else
- 				{
- 					ESP_LOGE("Wifi Scan", "We don't find a network available with a known password");
- 					current_try_for_reconnection ++;
- 				}
- 			}
- 		}
- 		else
- 		{
- 			item = head->head;
- 			item = scan_wifi(item, true);
- 			if (item != NULL)
- 			{
- 				item_print(item);
- 				current_try_for_reconnection ++;
- 				connect_wifi(item);
- 			}
- 			else
- 			{
- 				ESP_LOGE("Wifi Scan", "We don't find a network available with a known password");
- 				current_try_for_reconnection ++;
- 			}
- 		}
- 	}
+		if (scan_wifi(0, true))
+		{
+		  ESP_LOGI("Wifi Connection", "Trying to connect to: %s", networks[0].ssid);
+			current_try_for_reconnection ++;
+			connect_wifi(0);
+		}
+		else
+		{
+			ESP_LOGE("Wifi Scan", "We don't find a network available with a known password");
+			current_try_for_reconnection ++;
+		}
+	}
  	else
  	{
  		ESP_LOGE("Connection Status", "Connection failed");
@@ -221,9 +138,6 @@ void on_got_ip(void * event_handler_arg, esp_event_base_t event_base, int32_t ev
 	uint8_t get_mac[CONFIG_MAC_ADDR_SIZE];
 	ESP_ERROR_CHECK(esp_wifi_get_mac(ESP_IF_WIFI_STA,get_mac));
 	sprintf(mac, "%02x:%02x:%02x:%02x:%02x:%02x", get_mac[0], get_mac[1], get_mac[2], get_mac[3], get_mac[4], get_mac[5]);
-	// sscanf(get_mac, "%x:%x:%x:%x:%x:%x", &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5]);
-	// strncpy(mac, (MACSTR, MAC2STR(get_mac)), CONFIG_MAC_ADDR_SIZE);
-	//		ESP_LOGI("MAC", "Our mac address is: %02x:%02x:%02x:%02x:%02x:%02x",get_mac[0],get_mac[1],get_mac[2],get_mac[3],get_mac[4],get_mac[5]);
 	ESP_LOGI("MAC", "Our MAC address is: %s", mac);
 	if (xSemaphoreGive(semaphore) != pdTRUE)
 	{
@@ -254,9 +168,9 @@ esp_netif_t * init_wifi(void)
 	esp_netif_t * netif = esp_netif_create_default_wifi_sta();
 
 	// Attach handlers to an action. Is it necessary to create this handlers ???
-	esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, on_disconnection, NULL, NULL);
-	esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, on_connection, NULL, NULL);
-	esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, on_got_ip, NULL, NULL);
+	esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, on_disconnection, NULL);
+	esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, on_connection, NULL);
+	esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, on_got_ip, NULL);
 
 	// Initialize wifi
 	wifi_init_config_t init = WIFI_INIT_CONFIG_DEFAULT();
@@ -265,27 +179,24 @@ esp_netif_t * init_wifi(void)
 	// Define that it's a wifi station
 	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
 
-	// Replace item at the beginning of the list
-	item = head->head;
-
-	// Indicate that wifi is starting
-	wifi_start = true;
-
 	// Start wifi
 	ESP_ERROR_CHECK(esp_wifi_start());
 
 	// Try to connect to our network
-	scan(item);
-	esp_wifi_connect();
+	if (scan_wifi(0, true))
+	{
+		connect_wifi(0);
+	}
+	else
+	{
+		return NULL;
+	}
 
 	// Wait semaphore which indicate that we have ip address (add TickType_t cast ???)
 	if (xSemaphoreTake(semaphore, CONFIG_WAIT_TIME / portTICK_PERIOD_MS) != pdTRUE)
 	{
 		ESP_LOGE("Semaphore", "Semaphore don't giving up");
 	}
-
-	// Indicate that wifi isn't starting
-	wifi_start = false;
 
 	return netif;
 
@@ -296,9 +207,9 @@ esp_netif_t * init_wifi(void)
 // Function for disallocate resouces
 void disconnect_wifi(esp_netif_t * netif)
 {
-	ESP_ERR_CHECK(esp_event_handler_instance_unregister(on_disconnection));
-	ESP_ERR_CHECK(esp_event_handler_instance_unregister(on_connection));
-	ESP_ERR_CHECK(esp_event_handler_instance_unregister(on_got_ip));
+	ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, on_disconnection));
+	ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, on_connection));
+	ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, on_got_ip));
 
 	ESP_ERROR_CHECK(esp_wifi_stop());
 	esp_netif_destroy_default_wifi(netif);

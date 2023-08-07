@@ -5,4 +5,4 @@ list(APPEND INCLUDE_COMPONENT_DIR
 
 idf_component_register( SRCS "connect.c"
 	INCLUDE_DIRS ${INCLUDE_COMPONENT_DIR}
-	REQUIRES esp_wifi esp_netif freertos chained_list)
+	REQUIRES esp_wifi esp_netif freertos networkstorage)

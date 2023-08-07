@@ -1,0 +1,7 @@
+menu "Config sensor"
+
+	config WAIT_TIME_SEND
+	int "Time (in ms) to wait before sending new datas"
+	default 5000
+
+endmenu
