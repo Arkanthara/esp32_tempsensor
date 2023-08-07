@@ -24,62 +24,62 @@ networks_number = 0;
 NetworkStorage networks[10];
 
 #if defined(CONFIG_NETWORK_0_SSID) && defined(CONFIG_NETWORK_0_PWD)
-networks[0].ssid = CONFIG_NETWORK_0_SSID;
-networks[0].pwd = CONFIG_NETWORK_0_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_0_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_0_PWD;
 networks_number ++;
 #endif
 
 #if defined(CONFIG_NETWORK_1_SSID) && defined(CONFIG_NETWORK_1_PWD)
-networks[1].ssid = CONFIG_NETWORK_1_SSID;
-networks[1].pwd = CONFIG_NETWORK_1_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_1_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_1_PWD;
 networks_number ++;
 #endif
 
 #if defined(CONFIG_NETWORK_2_SSID) && defined(CONFIG_NETWORK_2_PWD)
-networks[2].ssid = CONFIG_NETWORK_2_SSID;
-networks[2].pwd = CONFIG_NETWORK_2_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_2_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_2_PWD;
 networks_number ++;
 #endif
 
 #if defined(CONFIG_NETWORK_3_SSID) && defined(CONFIG_NETWORK_3_PWD)
-networks[3].ssid = CONFIG_NETWORK_3_SSID;
-networks[3].pwd = CONFIG_NETWORK_3_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_3_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_3_PWD;
 networks_number ++;
 #endif
 
 #if defined(CONFIG_NETWORK_4_SSID) && defined(CONFIG_NETWORK_4_PWD)
-networks[4].ssid = CONFIG_NETWORK_4_SSID;
-networks[4].pwd = CONFIG_NETWORK_4_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_4_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_4_PWD;
 networks_number ++;
 #endif
 
 #if defined(CONFIG_NETWORK_5_SSID) && defined(CONFIG_NETWORK_5_PWD)
-networks[5].ssid = CONFIG_NETWORK_5_SSID;
-networks[5].pwd = CONFIG_NETWORK_5_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_5_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_5_PWD;
 networks_number ++;
 #endif
 
 #if defined(CONFIG_NETWORK_6_SSID) && defined(CONFIG_NETWORK_6_PWD)
-networks[6].ssid = CONFIG_NETWORK_6_SSID;
-networks[6].pwd = CONFIG_NETWORK_6_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_6_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_6_PWD;
 networks_number ++;
 #endif
 
 #if defined(CONFIG_NETWORK_7_SSID) && defined(CONFIG_NETWORK_7_PWD)
-networks[7].ssid = CONFIG_NETWORK_7_SSID;
-networks[7].pwd = CONFIG_NETWORK_7_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_7_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_7_PWD;
 networks_number ++;
 #endif
 
 #if defined(CONFIG_NETWORK_8_SSID) && defined(CONFIG_NETWORK_8_PWD)
-networks[8].ssid = CONFIG_NETWORK_8_SSID;
-networks[8].pwd = CONFIG_NETWORK_8_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_8_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_8_PWD;
 networks_number ++;
 #endif
 
 #if defined(CONFIG_NETWORK_9_SSID) && defined(CONFIG_NETWORK_9_PWD)
-networks[9].ssid = CONFIG_NETWORK_9_SSID;
-networks[9].pwd = CONFIG_NETWORK_9_PWD;
+networks[networks_number].ssid = CONFIG_NETWORK_9_SSID;
+networks[networks_number].pwd = CONFIG_NETWORK_9_PWD;
 networks_number ++;
 #endif
 
