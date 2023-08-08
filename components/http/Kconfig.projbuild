@@ -1,7 +1,6 @@
 menu "URL for HTTP Post"
 
 config URL
-	string "URL"
+	string "URL to post datas to server"
 	default "https://zelittlemichelserver.azurewebsites.net/api/Esp"
-	help
 endmenu

@@ -14,10 +14,7 @@
 #define WAIT_TIME pdMS_TO_TICKS(CONFIG_WAIT_TIME_SEND)
 
 // Our global variables
-bool task_2 = false;
-bool quit = false;
 bool is_connected = false;
-
 int networks_number = 0;
 NetworkStorage networks[10];
 char mac[CONFIG_MAC_ADDR_SIZE * 3];
@@ -33,10 +30,7 @@ void app_main(void)
 		return;
 	}
 	create_networks_table();
-	ESP_LOGI("CONFIG", "ssid: %s", networks[0].ssid);
-	ESP_LOGI("CONFIG", "Number of networks registered: %d", networks_number);
 	create_nvs("NetworkStorage");
-	ESP_LOGI("NVS Init", "Result for key %s: %d", "0", read_nvs("NetworkStorage", 0));
 
 	// Initialize wifi and connect wifi
 	esp_netif_t * netif = init_wifi();
