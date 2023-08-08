@@ -3,7 +3,7 @@
 #include "esp_netif.h"
 #include "esp_log.h"
 #include "esp_err.h"
-#include "freertos/semphr.h"
+#include "freertos/task.h"
 #include "networkstorage.h"
 
 /* Current position in list of index in nvs */
