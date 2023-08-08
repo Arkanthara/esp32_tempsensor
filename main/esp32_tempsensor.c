@@ -22,64 +22,6 @@ int networks_number = 0;
 NetworkStorage networks[10];
 char mac[CONFIG_MAC_ADDR_SIZE * 3];
 
-//#if defined(CONFIG_NETWORK_0_SSID) && defined(CONFIG_NETWORK_0_PWD)
-//init_networks((char *) CONFIG_NETWORK_0_SSID, (char *) CONFIG_NETWORK_0_PWD);
-//#endif
-
-// #if defined(CONFIG_NETWORK_1_SSID) && defined(CONFIG_NETWORK_1_PWD)
-// networks[networks_number].ssid = CONFIG_NETWORK_1_SSID;
-// networks[networks_number].pwd = (char *) CONFIG_NETWORK_1_PWD;
-// networks_number ++;
-// #else
-// #endif
-// 
-// #if defined(CONFIG_NETWORK_2_SSID) && defined(CONFIG_NETWORK_2_PWD)
-// networks[networks_number].ssid = CONFIG_NETWORK_2_SSID;
-// networks[networks_number].pwd = CONFIG_NETWORK_2_PWD;
-// networks_number ++;
-// #endif
-// 
-// #if defined(CONFIG_NETWORK_3_SSID) && defined(CONFIG_NETWORK_3_PWD)
-// networks[networks_number].ssid = CONFIG_NETWORK_3_SSID;
-// networks[networks_number].pwd = CONFIG_NETWORK_3_PWD;
-// networks_number ++;
-// #endif
-// 
-// #if defined(CONFIG_NETWORK_4_SSID) && defined(CONFIG_NETWORK_4_PWD)
-// networks[networks_number].ssid = CONFIG_NETWORK_4_SSID;
-// networks[networks_number].pwd = CONFIG_NETWORK_4_PWD;
-// networks_number ++;
-// #endif
-// 
-// #if defined(CONFIG_NETWORK_5_SSID) && defined(CONFIG_NETWORK_5_PWD)
-// networks[networks_number].ssid = CONFIG_NETWORK_5_SSID;
-// networks[networks_number].pwd = CONFIG_NETWORK_5_PWD;
-// networks_number ++;
-// #endif
-// 
-// #if defined(CONFIG_NETWORK_6_SSID) && defined(CONFIG_NETWORK_6_PWD)
-// networks[networks_number].ssid = CONFIG_NETWORK_6_SSID;
-// networks[networks_number].pwd = CONFIG_NETWORK_6_PWD;
-// networks_number ++;
-// #endif
-// 
-// #if defined(CONFIG_NETWORK_7_SSID) && defined(CONFIG_NETWORK_7_PWD)
-// networks[networks_number].ssid = CONFIG_NETWORK_7_SSID;
-// networks[networks_number].pwd = CONFIG_NETWORK_7_PWD;
-// networks_number ++;
-// #endif
-// 
-// #if defined(CONFIG_NETWORK_8_SSID) && defined(CONFIG_NETWORK_8_PWD)
-// networks[networks_number].ssid = CONFIG_NETWORK_8_SSID;
-// networks[networks_number].pwd = CONFIG_NETWORK_8_PWD;
-// networks_number ++;
-// #endif
-// 
-// #if defined(CONFIG_NETWORK_9_SSID) && defined(CONFIG_NETWORK_9_PWD)
-// networks[networks_number].ssid = CONFIG_NETWORK_9_SSID;
-// networks[networks_number].pwd = CONFIG_NETWORK_9_PWD;
-// networks_number ++;
-// #endif
 
 void app_main(void)
 {
@@ -93,9 +35,8 @@ void app_main(void)
 	create_networks_table();
 	ESP_LOGI("CONFIG", "ssid: %s", networks[0].ssid);
 	ESP_LOGI("CONFIG", "Number of networks registered: %d", networks_number);
-	create_nvs("Test");
-	write_nvs("Test", "2", 19);
-	ESP_LOGI("NVS Init", "Result for key %s: %d", "2", read_nvs("Test", "2"));
+	create_nvs("NetworkStorage");
+	ESP_LOGI("NVS Init", "Result for key %s: %d", "0", read_nvs("NetworkStorage", 0));
 
 	// Initialize wifi and connect wifi
 	esp_netif_t * netif = init_wifi();
@@ -110,8 +51,8 @@ void app_main(void)
 		{
 			// Initialize variables
 			float temp;
-			char buffer[6];
-			int buffer_len = 6;
+			char buffer[4 * CONFIG_MAC_ADDR_SIZE + 2];
+			int buffer_len = 4 * CONFIG_MAC_ADDR_SIZE + 2;
 
 			// Start temperature sensor
 			start_temp_sensor();
@@ -120,7 +61,7 @@ void app_main(void)
 			read_temp_sensor(&temp);
 
 			// Format float to string
-			int error = snprintf(buffer, buffer_len, "%f", temp);
+			int error = snprintf(buffer, buffer_len, "\"%s;%.2f\"", mac, temp);
 			if (error < 1)
 			{
 				ESP_LOGE("Convert", "Failed to convert float to string");
@@ -130,11 +71,13 @@ void app_main(void)
 				return;
 			}
 
-			// Send temperature to server
-			http_post(client, buffer, buffer_len);
+			ESP_LOGI("HTTP Data", "This is the datas send to the server: %s", buffer);
+
+			// Send temperature to server... Attention: the server don't accept char * with '\0' at the end !!! That's why I made buffer_len - 1....
+			http_post(client, buffer, buffer_len - 1);
 			
 			// Print temp_sensor
-			printf("Temperature's sensor: %s\n", buffer);
+			printf("Temperature's sensor: %.2f\n", temp);
 
 			// Stop sensor
 			stop_temp_sensor();

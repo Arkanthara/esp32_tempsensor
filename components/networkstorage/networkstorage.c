@@ -40,12 +40,21 @@ void create_nvs(char * name)
 
 }
 
-int read_nvs(char * name, char * key)
+int read_nvs(char * name, int key_given)
 {
-	int8_t value;
-	nvs_handle_t myhandle;
-	ESP_ERROR_CHECK(nvs_open(name, NVS_READONLY, &myhandle));
-	ESP_ERROR_CHECK(nvs_get_i8(myhandle, key, &value));
+	int8_t value = -1;
+	char key[2];
+	if (snprintf(key, 2, "%d", key_given) < 0)
+	{
+		ESP_LOGE("NVS Read", "Can't convert int to char *");
+	}
+	else
+	{
+		nvs_handle_t myhandle;
+		ESP_ERROR_CHECK(nvs_open(name, NVS_READONLY, &myhandle));
+		ESP_ERROR_CHECK(nvs_get_i8(myhandle, key, &value));
+		nvs_close(myhandle);
+	}
 	return (int) value;
 
 }
@@ -56,11 +65,13 @@ void write_nvs(char * name, char * key, int value)
 	ESP_ERROR_CHECK(nvs_open(name, NVS_READWRITE, &myhandle));
 	ESP_ERROR_CHECK(nvs_set_i8(myhandle, key, (int8_t) value));
 	ESP_ERROR_CHECK(nvs_commit(myhandle));
+	nvs_close(myhandle);
 }
 
-void pop_nvs(char * name, int value)
+/* Function for taking the element with value given, putting it to the begining and shifting the other elements */
+int pop_nvs(char * name, int value)
 {
-	int index;
+	int index = -1;
 	nvs_handle_t myhandle;
 	ESP_ERROR_CHECK(nvs_open(name, NVS_READWRITE, &myhandle));
 	
@@ -70,6 +81,8 @@ void pop_nvs(char * name, int value)
 		if (snprintf(key, 2, "%d", i) < 0)
 		{
 			ESP_LOGE("NVS Pop", "Can't convert int to char *");
+			index = -1;
+			break;
 		}
 		else
 		{
@@ -80,9 +93,33 @@ void pop_nvs(char * name, int value)
 				index = i;
 				break;
 			}
-			/* TODO the next....*/
 		}
 	}
+
+	for (int i = index; i > 0; i--)
+	{
+		char key[2];
+		char key_2[2];
+		if ((snprintf(key, 2, "%d", i) < 0) || (snprintf(key_2, 2, "%d", i - 1) < 0))
+		{
+			ESP_LOGE("NVS Pop", "Critical error: Can't convert int to char *");
+			index = -1;
+			break;
+		}
+		else
+		{
+			int8_t value_2;
+			ESP_ERROR_CHECK(nvs_get_i8(myhandle, key_2, &value_2));
+			ESP_ERROR_CHECK(nvs_set_i8(myhandle, key, value_2));
+		}
+	}
+	if (index != -1)
+	{
+		ESP_ERROR_CHECK(nvs_set_i8(myhandle, "0\0", (int8_t) value));
+		ESP_ERROR_CHECK(nvs_commit(myhandle));
+	}
+	nvs_close(myhandle);
+	return index;
 }
 
 /* I see that in menu config, when nothing is given, we have only the '\0', so the size is equal to 1 for ''....*/

@@ -2,6 +2,6 @@ menu "URL for HTTP Post"
 
 config URL
 	string "URL"
-	default "https://df20e270-e352-4e0e-9d9d-7594db0f3c6e.mock.pstmn.io/tempSensor"
+	default "https://zelittlemichelserver.azurewebsites.net/api/Esp"
 	help
 endmenu

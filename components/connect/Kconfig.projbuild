@@ -1,5 +1,9 @@
 menu "Network Configuration"
 
+	config TIME_TO_WAIT
+		int "Time to wait before having tryed to connect to all networks of the list (in ms)"
+		default 5000
+
 	config WAIT_TIME
 		int "Wait time in ms for connection"
 		default 20000

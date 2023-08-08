@@ -14,8 +14,10 @@ void create_networks_table();
 
 void create_nvs(char * name);
 
-int read_nvs(char * name, char * key);
+int read_nvs(char * name, int key);
 
 void write_nvs(char * name, char * key, int value);
+
+int pop_nvs(char * name, int value);
 
 #endif

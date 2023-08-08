@@ -1,15 +1,17 @@
 menu "Network SSID & PASSWORD"
        	config NETWORK_0_SSID
 		string "Network SSID"
-		default "WIFI_Mobile"
+		default "Nolan"
 	config NETWORK_0_PWD
 		string "Network Password"
-		default "428fdcf3d44d5e92a54d1ca5579d21416be03291895184d724abf652f24a"
+		default "JbNdIlY!"
 
 	config NETWORK_1_SSID
 		string "Network SSID"
+#		default "WIFI_Mobile"
 	config NETWORK_1_PWD
 		string "Network Password"
+#		default "428fdcf3d44d5e92a54d1ca5579d21416be03291895184d724abf652f24a"
 
 	config NETWORK_2_SSID
 		string "Network SSID"

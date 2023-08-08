@@ -126,8 +126,6 @@ void http_open(esp_http_client_handle_t client, int write_len)
 
 void http_post(esp_http_client_handle_t client, char * buffer, int buffer_len)
 {
-	// I put -1 because there is a strange thing on the web with the '\n'
-
 	// We open http connection and indicate that we want write a message of size buffer_len - 1
 	int error = esp_http_client_open(client, buffer_len);
 	if (error != ESP_OK)
